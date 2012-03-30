@@ -14,15 +14,15 @@
 // Helper functions
 //
 
-function formatByteSize(bytes) {
+var formatByteSize = formatByteSize || function(bytes) {
 	var i = -1;
 	do {
 		bytes = bytes / 1024;
 		i++;
 	} while (bytes > 99);
 	
-	return Math.max(bytes, 0.1).toFixed(1) + ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB'][i];
-}
+	return Math.max(bytes, 0.1).toFixed(1) + ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'][i];
+};
 
 var qq = qq || {};
 
