@@ -1,10 +1,13 @@
 /**
- * http://github.com/valums/file-uploader
+ * http://github.com/infosiftr/file-uploader
  *
- * Multiple file upload component with progress-bar, drag-and-drop.
- * © 2010 Andrew Valums ( andrew(at)valums.com )
+ * (c) InfoSiftr
+ * based on (c) Andrew Valums ( andrew(at)valums.com )
+ *
+ * requires jQuery (tested on 1.7)
  *
  * Licensed under GNU GPL 2 or later and GNU LGPL 2 or later, see license.txt.
+ * (unfortunately; what a virus)
  */
 
 //
