@@ -27,15 +27,6 @@ var formatByteSize = formatByteSize || function(bytes) {
 var qq = qq || {};
 
 /**
- * Adds all missing properties from second obj to first obj
- */
-qq.extend = function(first, second) {
-	for (var prop in second) {
-		first[prop] = second[prop];
-	}
-};
-
-/**
  * Searches for a given element in the array, returns -1 if it is not present.
  * @param {Number} [from] The index at which to begin the search
  */
@@ -137,7 +128,7 @@ qq.css = function(element, styles) {
 			styles.filter = 'alpha(opacity=' + Math.round(100 * styles.opacity) + ')';
 		}
 	}
-	qq.extend(element.style, styles);
+	jQuery.extend(element.style, styles);
 };
 qq.hasClass = function(element, name) {
 	var re = new RegExp('(^| )' + name + '( |$)');
@@ -292,7 +283,7 @@ qq.FileUploaderBasic = function(o) {
 			alert(message);
 		}
 	};
-	qq.extend(this._options, o);
+	jQuery.extend(this._options, o);
 
 	// number of files being uploaded
 	this._filesInProgress = 0;
@@ -484,7 +475,7 @@ qq.FileUploader = function(o) {
 	qq.FileUploaderBasic.apply(this, arguments);
 
 	// additional options
-	qq.extend(this._options, {
+	jQuery.extend(this._options, {
 		element: null,
 		// if set, will be used instead of qq-upload-list in template
 		listElement: null,
@@ -523,7 +514,7 @@ qq.FileUploader = function(o) {
 		}
 	});
 	// overwrite options with user supplied
-	qq.extend(this._options, o);
+	jQuery.extend(this._options, o);
 
 	this._element = this._options.element;
 	this._element.innerHTML = this._options.template;
@@ -538,9 +529,9 @@ qq.FileUploader = function(o) {
 };
 
 // inherit from Basic Uploader
-qq.extend(qq.FileUploader.prototype, qq.FileUploaderBasic.prototype);
+jQuery.extend(qq.FileUploader.prototype, qq.FileUploaderBasic.prototype);
 
-qq.extend(qq.FileUploader.prototype, {
+jQuery.extend(qq.FileUploader.prototype, {
 	/**
 	 * Gets one of the elements listed in this._options.classes
 	 **/
@@ -677,7 +668,7 @@ qq.UploadDropZone = function(o) {
 		onLeaveNotDescendants: function(e) {},
 		onDrop: function(e) {}
 	};
-	qq.extend(this._options, o);
+	jQuery.extend(this._options, o);
 
 	this._element = this._options.element;
 
@@ -767,7 +758,7 @@ qq.UploadButton = function(o) {
 		focusClass: 'qq-upload-button-focus'
 	};
 
-	qq.extend(this._options, o);
+	jQuery.extend(this._options, o);
 
 	this._element = this._options.element;
 
@@ -867,7 +858,7 @@ qq.UploadHandlerAbstract = function(o) {
 		onComplete: function(id, fileName, response) {},
 		onCancel: function(id, fileName) {}
 	};
-	qq.extend(this._options, o);
+	jQuery.extend(this._options, o);
 
 	this._queue = [];
 	// params for files in queue
@@ -889,7 +880,7 @@ qq.UploadHandlerAbstract.prototype = {
 		var len = this._queue.push(id);
 
 		var copy = {};
-		qq.extend(copy, params);
+		jQuery.extend(copy, params);
 		this._params[id] = copy;
 
 		// if too many active uploads, wait...
@@ -962,9 +953,9 @@ qq.UploadHandlerForm = function(o) {
 	this._inputs = {};
 };
 // @inherits qq.UploadHandlerAbstract
-qq.extend(qq.UploadHandlerForm.prototype, qq.UploadHandlerAbstract.prototype);
+jQuery.extend(qq.UploadHandlerForm.prototype, qq.UploadHandlerAbstract.prototype);
 
-qq.extend(qq.UploadHandlerForm.prototype, {
+jQuery.extend(qq.UploadHandlerForm.prototype, {
 	add: function(fileInput) {
 		fileInput.setAttribute('name', 'qqfile');
 		var id = 'qq-upload-handler-iframe' + qq.getUniqueId();
@@ -1141,9 +1132,9 @@ qq.UploadHandlerXhr.isSupported = function() {
 };
 
 // @inherits qq.UploadHandlerAbstract
-qq.extend(qq.UploadHandlerXhr.prototype, qq.UploadHandlerAbstract.prototype)
+jQuery.extend(qq.UploadHandlerXhr.prototype, qq.UploadHandlerAbstract.prototype)
 
-qq.extend(qq.UploadHandlerXhr.prototype, {
+jQuery.extend(qq.UploadHandlerXhr.prototype, {
 	/**
 	 * Adds file to the queue
 	 * Returns id to use with upload, cancel
