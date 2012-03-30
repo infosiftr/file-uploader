@@ -46,11 +46,6 @@ qq.indexOf = function(arr, elt, from) {
 	return -1;
 };
 
-qq.getUniqueId = (function() {
-	var id = 0;
-	return function() { return id++; };
-})();
-
 //
 // Events
 
@@ -958,7 +953,7 @@ jQuery.extend(qq.UploadHandlerForm.prototype, qq.UploadHandlerAbstract.prototype
 jQuery.extend(qq.UploadHandlerForm.prototype, {
 	add: function(fileInput) {
 		fileInput.setAttribute('name', 'qqfile');
-		var id = 'qq-upload-handler-iframe' + qq.getUniqueId();
+		var id = 'qq-upload-handler-iframe-' + Math.random() + '-' + Math.random();
 
 		this._inputs[id] = fileInput;
 
