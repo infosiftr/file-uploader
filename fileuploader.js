@@ -11,6 +11,16 @@
 // Helper functions
 //
 
+function formatByteSize(bytes) {
+	var i = -1;
+	do {
+		bytes = bytes / 1024;
+		i++;
+	} while (bytes > 99);
+	
+	return Math.max(bytes, 0.1).toFixed(1) + ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB'][i];
+}
+
 var qq = qq || {};
 
 /**
@@ -458,15 +468,7 @@ qq.FileUploaderBasic.prototype = {
 
 		return false;
 	},
-	_formatSize: function(bytes) {
-		var i = -1;
-		do {
-			bytes = bytes / 1024;
-			i++;
-		} while (bytes > 99);
-
-		return Math.max(bytes, 0.1).toFixed(1) + ['kB', 'MB', 'GB', 'TB', 'PB', 'EB'][i];
-	}
+	_formatSize: formatByteSize
 };
 
 
