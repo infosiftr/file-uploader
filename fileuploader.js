@@ -136,7 +136,7 @@ qq.addClass = function(element, name) {
 };
 qq.removeClass = function(element, name) {
 	var re = new RegExp('(^| )' + name + '( |$)');
-	element.className = element.className.replace(re, ' ').replace(/^\s+|\s+$/g, "");
+	element.className = element.className.replace(re, ' ').replace(/^\s+|\s+$/g, '');
 };
 qq.setText = function(element, text) {
 	element.innerText = text;
@@ -166,7 +166,7 @@ qq.getByClass = function(element, className) {
 	}
 
 	var result = [];
-	var candidates = element.getElementsByTagName("*");
+	var candidates = element.getElementsByTagName('*');
 	var len = candidates.length;
 
 	for (var i = 0; i < len; i++) {
@@ -222,7 +222,7 @@ qq.obj2url = function(obj, temp, prefixDone) {
 		for (var i = 0, len = obj.length; i < len; ++i) {
 			add(obj[i], i);
 		}
-	} else if ((typeof obj != 'undefined') && (obj !== null) && (typeof obj === "object")) {
+	} else if ((typeof obj != 'undefined') && (obj !== null) && (typeof obj === 'object')) {
 		// for anything else but a scalar, we will use for-in-loop
 		for (var i in obj) {
 			add(obj[i], i);
@@ -268,11 +268,11 @@ qq.FileUploaderBasic = function(o) {
 		onCancel: function(id, fileName) {},
 		// messages
 		messages: {
-			typeError: " {file} has invalid extension. Only {extensions} are allowed.",
-			sizeError: " {file} is too large, maximum file size is {sizeLimit}.",
-			minSizeError: " {file} is too small, minimum file size is {minSizeLimit}.",
-			emptyError: " {file} is empty, please select files again without it.",
-			onLeave: "The files are being uploaded, if you leave now the upload will be cancelled."
+			typeError: ' {file} has invalid extension. Only {extensions} are allowed.',
+			sizeError: ' {file} is too large, maximum file size is {sizeLimit}.',
+			minSizeError: ' {file} is too small, minimum file size is {minSizeLimit}.',
+			emptyError: ' {file} is empty, please select files again without it.',
+			onLeave: 'The files are being uploaded, if you leave now the upload will be cancelled.'
 		},
 		showMessage: function(message) {
 			alert(message);
@@ -285,6 +285,7 @@ qq.FileUploaderBasic = function(o) {
 	this._handler = this._createUploadHandler();
 
 	if (this._options.button) {
+		this._options.button = jQuery(this._options.button);
 		this._button = this._createUploadButton(this._options.button);
 	}
 
@@ -402,7 +403,7 @@ qq.FileUploaderBasic.prototype = {
 		if (file.value) {
 			// it is a file input
 			// get input value and remove path to normalize
-			name = file.value.replace(/.*(\/|\\)/, "");
+			name = file.value.replace(/.*(\/|\\)/, '');
 		} else {
 			// fix missing properties in Safari
 			name = file.fileName != null ? file.fileName : file.name;
@@ -573,7 +574,7 @@ jQuery.extend(qq.FileUploader.prototype, {
 
 			var relatedTarget = document.elementFromPoint(e.clientX, e.clientY);
 			// only fire when leaving document out
-			if ( ! relatedTarget || relatedTarget.nodeName == "HTML") {
+			if ( ! relatedTarget || relatedTarget.nodeName == 'HTML') {
 				dropArea.style.display = 'none';
 			}
 		});
@@ -731,7 +732,7 @@ qq.UploadDropZone.prototype = {
 	_isValidFileDrag: function(e) {
 		var dt = e.dataTransfer,
 			// do not check dt.types.contains in webkit, because it crashes safari 4
-			isWebkit = navigator.userAgent.indexOf("AppleWebKit") > -1;
+			isWebkit = navigator.userAgent.indexOf('AppleWebKit') > -1;
 
 		// dt.effectAllowed is none in Safari 5
 		// dt.types.contains check is for firefox
@@ -755,10 +756,10 @@ qq.UploadButton = function(o) {
 
 	jQuery.extend(this._options, o);
 
-	this._element = this._options.element;
+	this._element = jQuery(this._options.element);
 
 	// make button suitable container for input
-	qq.css(this._element, {
+	this._element.css({
 		position: 'relative',
 		overflow: 'hidden',
 		// Make sure browse button is in the right side
@@ -784,14 +785,14 @@ qq.UploadButton.prototype = {
 		this._input = this._createInput();
 	},
 	_createInput: function() {
-		var input = document.createElement("input");
+		var input = jQuery('<input>');
 
 		if (this._options.multiple) {
-			input.setAttribute("multiple", "multiple");
+			input.setAttribute('multiple', 'multiple');
 		}
 
-		input.setAttribute("type", "file");
-		input.setAttribute("name", this._options.name);
+		input.setAttribute('type', 'file');
+		input.setAttribute('name', this._options.name);
 
 		qq.css(input, {
 			position: 'absolute',
@@ -833,7 +834,7 @@ qq.UploadButton.prototype = {
 		// which is unacceptable in our case, disable keyboard access
 		if (window.attachEvent) {
 			// it is IE or Opera
-			input.setAttribute('tabIndex', "-1");
+			input.setAttribute('tabIndex', '-1');
 		}
 
 		return input;
@@ -966,7 +967,7 @@ jQuery.extend(qq.UploadHandlerForm.prototype, {
 	},
 	getName: function(id) {
 		// get input value and remove path to normalize
-		return this._inputs[id].value.replace(/.*(\/|\\)/, "");
+		return this._inputs[id].value.replace(/.*(\/|\\)/, '');
 	},
 	_cancel: function(id) {
 		this._options.onCancel(id, this.getName(id));
@@ -1029,7 +1030,7 @@ jQuery.extend(qq.UploadHandlerForm.prototype, {
 			// fixing Opera 10.53
 			if (iframe.contentDocument &&
 				iframe.contentDocument.body &&
-				iframe.contentDocument.body.innerHTML == "false") {
+				iframe.contentDocument.body.innerHTML == 'false') {
 				// In Opera event is fired second time
 				// when body.innerHTML changed from false
 				// to server response approx. after 1 sec
@@ -1049,10 +1050,10 @@ jQuery.extend(qq.UploadHandlerForm.prototype, {
 			response;
 
 		this.log("converting iframe's innerHTML to JSON");
-		this.log("innerHTML = " + doc.body.innerHTML);
+		this.log('innerHTML = ' + doc.body.innerHTML);
 
 		try {
-			response = eval("(" + doc.body.innerHTML + ")");
+			response = eval('(' + doc.body.innerHTML + ')');
 		} catch(err) {
 			response = {};
 		}
@@ -1122,8 +1123,8 @@ qq.UploadHandlerXhr.isSupported = function() {
 
 	return (
 		'multiple' in input &&
-		typeof File != "undefined" &&
-		typeof (new XMLHttpRequest()).upload != "undefined" );
+		typeof File != 'undefined' &&
+		typeof (new XMLHttpRequest()).upload != 'undefined' );
 };
 
 // @inherits qq.UploadHandlerAbstract
@@ -1188,10 +1189,10 @@ jQuery.extend(qq.UploadHandlerXhr.prototype, {
 		params['qqfile'] = name;
 		var queryString = qq.obj2url(params, this._options.action);
 
-		xhr.open("POST", queryString, true);
-		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-		xhr.setRequestHeader("X-File-Name", encodeURIComponent(name));
-		xhr.setRequestHeader("Content-Type", "application/octet-stream");
+		xhr.open('POST', queryString, true);
+		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		xhr.setRequestHeader('X-File-Name', encodeURIComponent(name));
+		xhr.setRequestHeader('Content-Type', 'application/octet-stream');
 		xhr.send(file);
 	},
 	_onComplete: function(id, xhr) {
@@ -1204,13 +1205,13 @@ jQuery.extend(qq.UploadHandlerXhr.prototype, {
 		this._options.onProgress(id, name, size, size);
 
 		if (xhr.status == 200) {
-			this.log("xhr - server response received");
-			this.log("responseText = " + xhr.responseText);
+			this.log('xhr - server response received');
+			this.log('responseText = ' + xhr.responseText);
 
 			var response;
 
 			try {
-				response = eval("(" + xhr.responseText + ")");
+				response = eval('(' + xhr.responseText + ')');
 			} catch(err) {
 				response = {};
 			}
