@@ -93,7 +93,7 @@ qq.FileUploaderBasic.prototype = {
 		var self = this,
 			handlerClass;
 		
-		if(qq.UploadHandlerXhr.isSupported()) {
+		if (qq.UploadHandlerXhr.isSupported()) {
 			handlerClass = 'UploadHandlerXhr';
 		}
 		else {
@@ -556,7 +556,7 @@ jQuery.extend(qq.UploadHandlerForm.prototype, {
 	 */
 	_getIframeContentJSON: function(iframe) {
 		// iframe.contentWindow.document - for IE<7
-		var doc = iframe.contentDocument ? iframe.contentDocument: iframe.contentWindow.document,
+		var doc = iframe[0].contentDocument ? iframe[0].contentDocument: iframe[0].contentWindow.document,
 			response;
 		
 		this.log("converting iframe's innerHTML to JSON");
@@ -588,6 +588,7 @@ jQuery.extend(qq.UploadHandlerForm.prototype, {
 	 * Creates form, that will be submitted to iframe
 	 */
 	_createForm: function(iframe, params) {
+		params['silly-iframe-hack'] = 1;
 		var queryString = this._options.action + '?' + jQuery.param(params);
 		
 		var form = jQuery('<form>', {
