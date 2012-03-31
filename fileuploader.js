@@ -30,6 +30,7 @@ qq.FileUploaderBasic = function(o) {
 		// set to true to see the server response
 		debug: false,
 		action: '/server/upload',
+		fileParamName: 'qqfile',
 		params: {},
 		button: null,
 		multiple: true,
@@ -102,6 +103,7 @@ qq.FileUploaderBasic.prototype = {
 		var handler = new qq[handlerClass]( {
 			debug: this._options.debug,
 			action: this._options.action,
+			fileParamName: this._options.fileParamName,
 			maxConnections: this._options.maxConnections,
 			onProgress: function(id, fileName, loaded, total) {
 				self._onProgress(id, fileName, loaded, total);
@@ -349,7 +351,8 @@ qq.UploadButton.prototype = {
 qq.UploadHandlerAbstract = function(o) {
 	this._options = {
 		debug: false,
-		action: '/upload.php',
+		action: '/server/upload',
+		fileParamName: 'qqfile',
 		// maximum number of concurrent uploads
 		maxConnections: 999,
 		onProgress: function(id, fileName, loaded, total) {},
@@ -457,7 +460,7 @@ jQuery.extend(qq.UploadHandlerForm.prototype, qq.UploadHandlerAbstract.prototype
 
 jQuery.extend(qq.UploadHandlerForm.prototype, {
 	add: function(fileInput) {
-		fileInput.attr('name', 'qqfile');
+		fileInput.attr('name', this._options.fileParamName);
 		var id = 'qq-upload-handler-iframe-' + Math.random() + '-' + Math.random();
 		
 		this._inputs[id] = fileInput;
@@ -685,7 +688,7 @@ jQuery.extend(qq.UploadHandlerXhr.prototype, {
 		
 		// build query string
 		params = params || {};
-		params['qqfile'] = name;
+		params[this._options.fileParamName] = name;
 		var queryString = this._options.action + '?' + jQuery.param(params);
 		
 		xhr.open('POST', queryString, true);
