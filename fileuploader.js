@@ -563,7 +563,7 @@ jQuery.extend(qq.UploadHandlerForm.prototype, {
 		this.log('innerHTML = ' + doc.body.innerHTML);
 		
 		try {
-			response = eval('(' + doc.body.innerHTML + ')');
+			response = jQuery.parseJSON(doc.body.innerText || doc.body.innerHTML);
 		}
 		catch(err) {
 			response = {};
@@ -779,7 +779,7 @@ jQuery.extend(qq.UploadHandlerXhr.prototype, {
 			var response;
 			
 			try {
-				response = eval('(' + xhr.responseText + ')');
+				response = jQuery.parseJSON(xhr.responseText);
 			}
 			catch(err) {
 				response = {};
