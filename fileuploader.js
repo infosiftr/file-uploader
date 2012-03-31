@@ -625,7 +625,7 @@ qq.UploadHandlerXhr.isSupported = function() {
 	return (
 		'multiple' in input &&
 		typeof File !== 'undefined' &&
-		typeof (new XMLHttpRequest()).upload !== 'undefined'
+		typeof (jQuery.ajaxSettings.xhr()).upload !== 'undefined'
 	);
 };
 
@@ -647,11 +647,11 @@ jQuery.extend(qq.UploadHandlerXhr.prototype, {
 	getName: function(id) {
 		var file = this._files[id];
 		// fix missing name in Safari 4
-		return file.fileName != null ? file.fileName : file.name;
+		return file.fileName || file.name || '';
 	},
 	getSize: function(id) {
 		var file = this._files[id];
-		return file.fileSize != null ? file.fileSize : file.size;
+		return file.fileSize || file.size || 0;
 	},
 	/**
 	 * Returns uploaded bytes for file identified by id
@@ -670,7 +670,7 @@ jQuery.extend(qq.UploadHandlerXhr.prototype, {
 		
 		this._loaded[id] = 0;
 		
-		var xhr = this._xhrs[id] = new XMLHttpRequest();
+		var xhr = this._xhrs[id] = new jQuery.ajaxSettings.xhr();
 		var self = this;
 		
 		xhr.upload.onprogress = function(e) {
@@ -686,16 +686,80 @@ jQuery.extend(qq.UploadHandlerXhr.prototype, {
 			}
 		};
 		
+		var sendFunc = xhr.send,
+			sendData = null,
+			contentType = 'application/octet-stream';
+		
 		// build query string
 		params = params || {};
 		params[this._options.fileParamName] = name;
-		var queryString = this._options.action + '?' + jQuery.param(params);
+		var queryString = this._options.action;
+		if (window.FormData) {
+			params[this._options.fileParamName] = file;
+			
+			sendData = new FormData();
+			contentType = null;
+			$.each(params, function(key, val) {
+				sendData.append(key, val);
+			});
+		}
+		else {
+			var haveGetBinary = 'function' === typeof file.getAsBinary;
+			var haveGetText = 'function' === typeof file.getAsText;
+			
+			if (haveGetBinary || haveGetText) {
+				params[this._options.fileParamName] = file;
+				
+				var boundary = '---------UploadHandlerXhr-' + Math.random() + '-' + Math.random();
+				
+				sendFunc = xhr.sendAsBinary || sendFunc;
+				contentType = 'multipart/form-data; boundary=' + boundary;
+				
+				sendData = '';
+				$.each(params, function(key, val) {
+					sendData += '--' + boundary + "\r\n";
+					
+					if (val.fileName || val.name) {
+						var fileName = val.fileName || val.name;
+						var fileType = val.type || 'application/octet-stream';
+						sendData += 'Content-Disposition: form-data; name="' + key + '"; filename="' + fileName + '"' + "\r\n";
+						sendData += 'Content-Type: ' + fileType + "\r\n";
+						sendData += "\r\n";
+						
+						if (haveGetBinary) {
+							sendData += val.getAsBinary();
+						}
+						else /*if (haveGetText)*/ {
+							sendData += val.getAsText();
+						}
+					}
+					else {
+						sendData += 'Content-Disposition: form-data; name="' + key + '"' + "\r\n";
+						sendData += "\r\n";
+						sendData += val;
+					}
+					
+					sendData += "\r\n";
+				});
+				
+				if (sendData) {
+					sendData += '--' + boundary + '--';
+				}
+			}
+			else {
+				queryString += '?' + jQuery.param(params);
+				sendData = file;
+			}
+		}
 		
 		xhr.open('POST', queryString, true);
 		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 		xhr.setRequestHeader('X-File-Name', encodeURIComponent(name));
-		xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-		xhr.send(file);
+		xhr.setRequestHeader('X-File-Size', encodeURIComponent(size));
+		if (contentType) {
+			xhr.setRequestHeader('Content-Type', contentType);
+		}
+		sendFunc.call(xhr, sendData);
 	},
 	_onComplete: function(id, xhr) {
 		// the request was aborted/cancelled
