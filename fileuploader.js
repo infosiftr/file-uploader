@@ -81,7 +81,7 @@ qq.FileUploaderBasic.prototype = {
 	_createUploadButton: function(element) {
 		var self = this;
 		
-		return new qq.UploadButton( {
+		return new qq.UploadButton({
 			element: element,
 			multiple: this._options.multiple && qq.UploadHandlerXhr.isSupported(),
 			onChange: function(input) {
@@ -100,7 +100,7 @@ qq.FileUploaderBasic.prototype = {
 			handlerClass = 'UploadHandlerForm';
 		}
 		
-		var handler = new qq[handlerClass]( {
+		var handler = new qq[handlerClass]({
 			debug: this._options.debug,
 			action: this._options.action,
 			fileParamName: this._options.fileParamName,
